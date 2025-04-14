@@ -1,8 +1,9 @@
-import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { Image, ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import { images } from "@/constants/images";
 import { icons } from "@/constants/icons";
+import { logout } from "@/services/auth";
 
 const TabIcon = ({ focused, title, icon }: any) => {
   if (focused) {
@@ -24,9 +25,25 @@ const TabIcon = ({ focused, title, icon }: any) => {
     );
   
 };
+
 const _layout = () => {
+const router = useRouter()
+
+  const getLogout=async()=>{
+    try {
+      let res =await logout();
+      if(res){
+        router.replace("/login");
+      }
+    } catch (error) {
+      return (
+        <Text className="text-white font-bold">Error In Logout</Text>
+      )
+    }
+  }
   return (
-    <Tabs
+    <>
+     <Tabs
       screenOptions={{
         tabBarShowLabel: false,
         tabBarItemStyle: {
@@ -81,7 +98,7 @@ const _layout = () => {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
@@ -90,8 +107,13 @@ const _layout = () => {
             <TabIcon focused={focused} title="Profile" icon={icons.person} />
           ),
         }}
-      />
+      /> */}
     </Tabs>
+    <TouchableOpacity className="absolute top-20 right-8 " onPress={getLogout}>
+      <Text className="text-red-600 font-bold">Logout</Text>
+    </TouchableOpacity>
+    </>
+   
   );
 };
 
